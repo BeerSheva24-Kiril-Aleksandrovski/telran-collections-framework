@@ -19,7 +19,7 @@ public abstract class CollectionTest {
         assertArrayEquals(expected, collection.stream().toArray(Integer[]::new));
         assertEquals(expected.length, collection.size());
     }
-    
+
     @Test
     void addTest() {
         assertTrue(collection.add(200));
@@ -70,7 +70,7 @@ public abstract class CollectionTest {
         int index = 0;
         Iterator<Integer> it = collection.iterator();
         while(it.hasNext()) {
-            actual[index++] = it.next();
+                actual[index++] = it.next();
         }
         assertArrayEquals(array, actual);
         assertThrowsExactly(NoSuchElementException.class, it::next );

@@ -1,7 +1,8 @@
 package telran.util;
+import java.util.NoSuchElementException;
 
 import java.util.Iterator;
-
+@SuppressWarnings("unchecked")
 public class LinkedList<T> implements List<T> {
     private static class Node<T> {
         T obj;
@@ -12,18 +13,22 @@ public class LinkedList<T> implements List<T> {
             this.obj = obj;
         }
     }
-    private class LinkedListIterator implements Iterator<T> {
 
+    private class LinkedListIterator implements Iterator<T> {
+        private Node<T> curr = head;
         @Override
         public boolean hasNext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'hasNext'");
+            return curr != null;
         }
 
         @Override
         public T next() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T obj = curr.obj;
+            curr = curr.next;
+            return obj;
         }
         
     }
@@ -37,8 +42,7 @@ public class LinkedList<T> implements List<T> {
         if (index < 0 || index > limit) {
          throw new IndexOutOfBoundsException(index);
         }
-    }
-
+     }
     private Node<T> getNode(int index) {
         return index < size / 2 ? getNodeFromHead(index) : getNodeFromTail(index);
     }
@@ -70,13 +74,6 @@ public class LinkedList<T> implements List<T> {
         size++;
     }
 
-    @Override
-        public boolean add(T obj) {
-            Node<T> node = new Node<>(obj);
-            addNode(node, size);
-            return true;
-        }
-
     private void addMiddle(Node<T> nodeToInsert, int index) {
         Node<T> nodeBefore = getNode(index);
         Node<T> nodeAfter = nodeBefore.prev;
@@ -84,6 +81,7 @@ public class LinkedList<T> implements List<T> {
         nodeToInsert.prev = nodeAfter;
         nodeBefore.prev = nodeToInsert;
         nodeAfter.next = nodeToInsert;
+
     }
 
     private void addTail(Node<T> node) {
@@ -102,19 +100,65 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    
+    @Override
+    public boolean add(T obj) {
+        Node<T> node = new Node<>(obj);
+        addNode(node, size);
+        return true;
+    }
+
+    @Override
+        public void add(int index, T obj) {
+            checkIndex(index, true);
+            Node<T> node = new Node<>(obj);
+            addNode(node, index);
+    }
+
     @Override
     public boolean remove(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        boolean res = false;
+        int index = indexOf(pattern);
+        if (index >= 0) {
+            remove(index);
+            res = true;
+        }
+        return res;
     }
 
     @Override
     public T remove(int index) {
-        
-        return null;  
+        checkIndex(index, false);
+        Node<T> node = getNode(index);       
+        if (node == head) {
+            removeHead(node);
+        } else if (node == tail) {
+            removeTail(node);
+        } else {
+            removeMiddle(node);
+        }
+        size--;
+        return node.obj;
     }
-    
+    private void removeTail(Node<T> node) {
+        tail = tail.prev;
+        tail.next = null;
+    }
+    private void removeHead(Node<T> node) {
+        if (head == tail) {
+            head = tail = null;
+        } else {
+            head = head.next;
+            head.prev = null;
+
+        }
+    }
+    private void removeMiddle(Node<T> node) {
+        Node<T> nodeAfter = node.next;
+        Node<T> nodeBefore = node.prev;
+        nodeBefore.next = node.next;
+        nodeAfter.prev = node.prev; 
+    }    
+
     @Override
     public int size() {
         return size;
@@ -136,14 +180,6 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public void add(int index, T obj) {
-        checkIndex(index, true);
-        Node<T> node = new Node<>(obj);
-        addNode(node, index);
-    }
-
-    
-    @Override
     public T get(int index) {
         checkIndex(index, false);
         return getNode(index).obj;
@@ -152,16 +188,23 @@ public class LinkedList<T> implements List<T> {
     @Override
     public int indexOf(T pattern) {
         int index = 0;
-        while (index < size && !pattern.equals()) {
+        Node<T> curr = head;
+        while (index < size && !pattern.equals(curr.obj)) {
             index++;
+            curr = curr.next;
         }
         return index >= size ? -1 : index;
     }
 
     @Override
     public int lastIndexOf(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lastIndexOf'");
+        Node<T> curr = tail;
+        int index = size - 1;
+        while (index >= 0 && !pattern.equals(curr.obj)) {
+            index--;
+            curr = curr.prev;
+        }
+        return index;
     }
 
 }
