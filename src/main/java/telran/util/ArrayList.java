@@ -13,42 +13,63 @@ public class ArrayList<T> implements List<T>{
     public ArrayList() {
         this(DEFAULT_CAPACITY);
     }
-
-    @Override
-    public boolean add(T obj) {
-        if (size == array.length) {
+    
+    private void reallocationIfNeeded() {
+        if(size == array.length) {
             reallocate();
         }
-        array[size++] = obj;
-
-        return false;
     }
+
     private void reallocate() {
         array = Arrays.copyOf(array, array.length * 2);
-    } 
+    }
+   
+    private void checkIndex(int index, boolean sizeInclusive) {
+        int limit = sizeInclusive ? size : size - 1;
+        if (index < 0 || index > limit) {
+         throw new IndexOutOfBoundsException(index);
+        } 
+    }
+    
+    @Override
+    public boolean add(T obj) {
+        reallocationIfNeeded();
+        array[size++] = obj;
+        return true;
+    }
+
+    @Override
+    public void add(int index, T obj) {
+        checkIndex(index, false);
+        reallocationIfNeeded();
+        System.arraycopy(array, index, array, index + 1, size - index);
+        array[index] = obj;
+        size++;
+    }
+
+    @Override
+    public T remove(int index) {
+        checkIndex(index, false);
+        T obj = (T)array[index];
+        size--;
+        System.arraycopy(array, index + 1, array, index, size - index);
+        return obj;
+    }
 
     @Override
     public boolean remove(T pattern) {
         boolean res = false;
         int index = indexOf(pattern);
-        if (index >= 0 && index < size) {
+        if (index >= 0) {
             remove(index);
-            array[size--] = null;
             res = true;
         }
         return res;
     }
 
     @Override
-    public T remove(int index) {
-        T obj = get(index);
-        System.arraycopy(array, index + 1, array, index, size - index - 1);
-        return obj;
-    }
-
-    @Override
     public int size() {
-        return size;
+       return size;
     }
 
     @Override
@@ -65,20 +86,10 @@ public class ArrayList<T> implements List<T>{
     public Iterator<T> iterator() {
        return new ArrayListIterator();
     }
-
-    @Override
-    public void add(int index, T obj) {
-        System.arraycopy(array, 0, array, 0, index);
-        array[index] = obj;
-        System.arraycopy(array, index, array, index + 1, size - index);
-    }
-
     
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
+        checkIndex(index, false);
         return (T) array[index];
     }
 
@@ -93,7 +104,7 @@ public class ArrayList<T> implements List<T>{
 
     @Override
     public int lastIndexOf(T pattern) {
-        int index = array.length-1;
+        int index = size - 1;
         while (index >= 0 && !pattern.equals(array[index])) {
             index--;
         }
