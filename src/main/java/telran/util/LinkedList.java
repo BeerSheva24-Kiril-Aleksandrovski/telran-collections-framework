@@ -1,6 +1,6 @@
 package telran.util;
 import java.util.NoSuchElementException;
-
+import java.util.Objects;
 import java.util.Iterator;
 @SuppressWarnings("unchecked")
 public class LinkedList<T> implements List<T> {
@@ -81,7 +81,6 @@ public class LinkedList<T> implements List<T> {
         nodeToInsert.prev = nodeAfter;
         nodeBefore.prev = nodeToInsert;
         nodeAfter.next = nodeToInsert;
-
     }
 
     private void addTail(Node<T> node) {
@@ -130,20 +129,21 @@ public class LinkedList<T> implements List<T> {
         checkIndex(index, false);
         Node<T> node = getNode(index);       
         if (node == head) {
-            removeHead(node);
+            removeHead();
         } else if (node == tail) {
-            removeTail(node);
+            removeTail();
         } else {
             removeMiddle(node);
         }
         size--;
         return node.obj;
     }
-    private void removeTail(Node<T> node) {
+
+    private void removeTail() {
         tail = tail.prev;
         tail.next = null;
     }
-    private void removeHead(Node<T> node) {
+    private void removeHead() {
         if (head == tail) {
             head = tail = null;
         } else {
@@ -189,7 +189,7 @@ public class LinkedList<T> implements List<T> {
     public int indexOf(T pattern) {
         int index = 0;
         Node<T> curr = head;
-        while (index < size && !pattern.equals(curr.obj)) {
+        while (index < size && !Objects.equals(pattern, curr.obj)) {
             index++;
             curr = curr.next;
         }
@@ -200,7 +200,7 @@ public class LinkedList<T> implements List<T> {
     public int lastIndexOf(T pattern) {
         Node<T> curr = tail;
         int index = size - 1;
-        while (index >= 0 && !pattern.equals(curr.obj)) {
+        while (index >= 0 && !Objects.equals(pattern, curr.obj)) {
             index--;
             curr = curr.prev;
         }
