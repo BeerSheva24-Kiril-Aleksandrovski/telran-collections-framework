@@ -24,13 +24,6 @@ public class ArrayList<T> implements List<T>{
     private void reallocate() {
         array = Arrays.copyOf(array, array.length * 2);
     }
-   
-    private void checkIndex(int index, boolean sizeInclusive) {
-        int limit = sizeInclusive ? size : size - 1;
-        if (index < 0 || index > limit) {
-         throw new IndexOutOfBoundsException(index);
-        } 
-    }
     
     @Override
     public boolean add(T obj) {
@@ -54,18 +47,8 @@ public class ArrayList<T> implements List<T>{
         T obj = (T)array[index];
         size--;
         System.arraycopy(array, index + 1, array, index, size - index);
+        array[size] = null;
         return obj;
-    }
-
-    @Override
-    public boolean remove(T pattern) {
-        boolean res = false;
-        int index = indexOf(pattern);
-        if (index >= 0) {
-            remove(index);
-            res = true;
-        }
-        return res;
     }
 
     @Override

@@ -29,20 +29,13 @@ public class LinkedList<T> implements List<T> {
             T obj = curr.obj;
             curr = curr.next;
             return obj;
-        }
-        
+        } 
     }
 
     Node<T> head;
     Node<T> tail;
     int size = 0;
 
-    private void checkIndex(int index, boolean sizeInclusive) {
-        int limit = sizeInclusive ? size : size - 1;
-        if (index < 0 || index > limit) {
-         throw new IndexOutOfBoundsException(index);
-        }
-     }
     private Node<T> getNode(int index) {
         return index < size / 2 ? getNodeFromHead(index) : getNodeFromTail(index);
     }
@@ -127,7 +120,13 @@ public class LinkedList<T> implements List<T> {
     @Override
     public T remove(int index) {
         checkIndex(index, false);
-        Node<T> node = getNode(index);       
+        Node<T> node = getNode(index);
+        removeNode(node);
+        return node.obj;
+    }
+        
+
+    private void removeNode(Node<T> node) {
         if (node == head) {
             removeHead();
         } else if (node == tail) {
@@ -136,13 +135,20 @@ public class LinkedList<T> implements List<T> {
             removeMiddle(node);
         }
         size--;
-        return node.obj;
+        clearReferences(node);
+    }
+    
+    private void clearReferences(Node<T> node) {
+        node.next = null;
+        node.obj = null;
+        node.prev = null;
     }
 
     private void removeTail() {
         tail = tail.prev;
         tail.next = null;
     }
+    
     private void removeHead() {
         if (head == tail) {
             head = tail = null;
@@ -152,6 +158,7 @@ public class LinkedList<T> implements List<T> {
 
         }
     }
+
     private void removeMiddle(Node<T> node) {
         Node<T> nodeAfter = node.next;
         Node<T> nodeBefore = node.prev;
@@ -167,11 +174,6 @@ public class LinkedList<T> implements List<T> {
     @Override
     public boolean isEmpty() {
         return size == 0;
-    }
-
-    @Override
-    public boolean contains(T pattern) {
-        return indexOf(pattern) > -1;
     }
 
     @Override
