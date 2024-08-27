@@ -2,7 +2,6 @@ package telran.util;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Iterator;
-@SuppressWarnings("unchecked")
 public class LinkedList<T> implements List<T> {
     private static class Node<T> {
         T obj;
@@ -15,22 +14,33 @@ public class LinkedList<T> implements List<T> {
     }
 
     private class LinkedListIterator implements Iterator<T> {
-        private Node<T> curr = head;
+        Node<T> curr = head;
+        Node<T> prev = null;
         @Override
         public boolean hasNext() {
             return curr != null;
         }
-
+        
         @Override
         public T next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             T obj = curr.obj;
+            prev = curr;
             curr = curr.next;
             return obj;
+        }
+        @Override
+        public void remove() {
+            if(prev == null) {
+                throw new IllegalStateException();
+            }
+            removeNode(prev);
+            prev = null;
         } 
     }
+
 
     Node<T> head;
     Node<T> tail;
@@ -148,7 +158,7 @@ public class LinkedList<T> implements List<T> {
         tail = tail.prev;
         tail.next = null;
     }
-    
+
     private void removeHead() {
         if (head == tail) {
             head = tail = null;

@@ -2,6 +2,7 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class ArrayList<T> implements List<T>{
@@ -95,10 +96,28 @@ public class ArrayList<T> implements List<T>{
         return index;
     }
 
+    @Override
+    public boolean removeIf(Predicate <T> predicate) {
+        int indexTo = 0;
+        Predicate <T> negPred = predicate.negate();             //not to apply "!" operator on ecach iterationm
+        for(int currentIndex = 0; currentIndex < size; currentIndex++){
+            T current = (T)array[currentIndex];
+            if (negPred.test(current)){
+                array[indexTo++] = current;
+            }
+        }
+        Arrays.fill(array, indexTo, size, null);
+        boolean res = indexTo < size;
+        size = indexTo;
+        return res;
+    }
+
     private class ArrayListIterator implements Iterator<T> {
         private int index = 0;
+        private  boolean flNext = false;
         @Override
         public boolean hasNext() {
+            flNext = true;
             return index < size;
         }
     
@@ -108,6 +127,15 @@ public class ArrayList<T> implements List<T>{
                 throw new NoSuchElementException();
             }
             return (T)array[index++];
+        }
+    
+        @Override
+        public void remove() {
+            if (!flNext) {
+                throw new IllegalStateException();
+            }
+            ArrayList.this.remove(--index);
+            flNext = false;
         }
     }
 }
