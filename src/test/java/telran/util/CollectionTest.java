@@ -34,8 +34,8 @@ public abstract class CollectionTest {
 
     @Test
     void addExsistingTest() {
-        // assertTrue(collection.add(17));
-        // runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
+        assertTrue(collection.add(17));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
     }
 
     @Test
