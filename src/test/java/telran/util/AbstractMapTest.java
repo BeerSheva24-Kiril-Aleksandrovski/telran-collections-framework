@@ -1,16 +1,9 @@
 package telran.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
-
-import telran.util.Map.Entry;
 
 public abstract class AbstractMapTest {
     Map<Integer, String> map;
@@ -70,12 +63,25 @@ public abstract class AbstractMapTest {
     }
 
     @Test
-    void sizeTest() {
-    assertEquals(array.length, map.size());
+        void sizeTest() {
+        assertEquals(array.length, map.size());
     }
 
     @Test
-    void isEmptyTest() {
-    assertFalse(map.isEmpty());
+        void isEmptyTest() {
+        assertFalse(map.isEmpty());
+    }
+
+    @Test
+    void keySetTest() {
+        Integer[] keys = map.keySet().stream().toArray(Integer[]::new);
+        runTest(array, keys);
+    }
+
+    @Test
+    void valuesTest() {
+        String[] expected = Arrays.stream(array).map(this::addValue).toArray(String[]::new);
+        String[] values = map.values().stream().toArray(String[]::new);
+        runTest(expected, values);
     }
 }

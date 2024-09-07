@@ -1,13 +1,19 @@
 package telran.util;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 
 public class HashMapTest extends AbstractMapTest {
 
     @Override
     <T> void runTest(T[] expected, T[] actual) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'runTest'");
+        T[] expectedSorted = Arrays.copyOf(expected, expected.length);
+        Arrays.sort(expectedSorted);
+        T[] actualSorted = Arrays.copyOf(actual, actual.length);
+        Arrays.sort(actualSorted);
+
+        assertArrayEquals(expectedSorted, actualSorted);
     }
     @Override
     @BeforeEach

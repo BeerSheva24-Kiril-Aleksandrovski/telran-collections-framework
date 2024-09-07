@@ -1,9 +1,11 @@
 package telran.util;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Iterator;
+
 public class LinkedList<T> implements List<T> {
-    private static class Node<T> {
+    static class Node<T> {
         T obj;
         Node<T> next;
         Node<T> prev;
@@ -13,14 +15,15 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private class LinkedListIterator implements Iterator<T> {
+    class LinkedListIterator implements Iterator<T> {
         Node<T> curr = head;
         Node<T> prev = null;
+
         @Override
         public boolean hasNext() {
             return curr != null;
         }
-        
+
         @Override
         public T next() {
             if (!hasNext()) {
@@ -31,22 +34,22 @@ public class LinkedList<T> implements List<T> {
             curr = curr.next;
             return obj;
         }
+
         @Override
         public void remove() {
-            if(prev == null) {
+            if (prev == null) {
                 throw new IllegalStateException();
             }
             removeNode(prev);
             prev = null;
-        } 
+        }
     }
-
 
     Node<T> head;
     Node<T> tail;
     int size = 0;
 
-    private Node<T> getNode(int index) {
+    Node<T> getNode(int index) {
         return index < size / 2 ? getNodeFromHead(index) : getNodeFromTail(index);
     }
 
@@ -66,7 +69,7 @@ public class LinkedList<T> implements List<T> {
         return current;
     }
 
-    private void addNode(Node<T> node, int index) {
+    void addNode(Node<T> node, int index) {
         if (index == 0) {
             addHead(node);
         } else if (index == size) {
@@ -110,10 +113,10 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-        public void add(int index, T obj) {
-            checkIndex(index, true);
-            Node<T> node = new Node<>(obj);
-            addNode(node, index);
+    public void add(int index, T obj) {
+        checkIndex(index, true);
+        Node<T> node = new Node<>(obj);
+        addNode(node, index);
     }
 
     @Override
@@ -134,9 +137,8 @@ public class LinkedList<T> implements List<T> {
         removeNode(node);
         return node.obj;
     }
-        
 
-    private void removeNode(Node<T> node) {
+    void removeNode(Node<T> node) {
         if (node == head) {
             removeHead();
         } else if (node == tail) {
@@ -147,7 +149,7 @@ public class LinkedList<T> implements List<T> {
         size--;
         clearReferences(node);
     }
-    
+
     private void clearReferences(Node<T> node) {
         node.next = null;
         node.obj = null;
@@ -173,8 +175,8 @@ public class LinkedList<T> implements List<T> {
         Node<T> nodeAfter = node.next;
         Node<T> nodeBefore = node.prev;
         nodeBefore.next = node.next;
-        nodeAfter.prev = node.prev; 
-    }    
+        nodeAfter.prev = node.prev;
+    }
 
     @Override
     public int size() {
