@@ -17,7 +17,8 @@ public abstract class ListTest extends CollectionTest {
     @Test
     void addIndexTest() {
         //Integer[] array = {3, -10, 0, 1, 10, 8, 100, 17};
-        Integer[] expected = {3, -100, -10, 0, 1, null, 10, 8, 100, 17};
+
+        Integer[] expected = { 3, -100, -10, 20, 1, null, 10, 8, 100, 17 };
         list.add(4, null);
         list.add(1, -100);
         runTest(expected);

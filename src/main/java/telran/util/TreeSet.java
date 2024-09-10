@@ -27,20 +27,7 @@ public class TreeSet<T> implements SortedSet<T> {
         }
 
         private void setNextCurrent() {
-            if (current.right == null) {
-                current = getGreaterParent(current);
-            } else {
-                current = getMinNode(current.right);
-            }
-        }
-
-        private Node<T> getGreaterParent(Node<T> node) {
-            Node<T> res = node;
-            while (res.parent != null && res.parent.right == res) {
-                res = res.parent;
-            }
-            return res.parent;
-
+            current = getNextCurrent(current);
         }
 
         @Override
@@ -112,6 +99,24 @@ public class TreeSet<T> implements SortedSet<T> {
 
     private void addRoot(Node<T> node) {
         root = node;
+    }
+
+    private Node<T> getGreaterParent(Node<T> node) {
+        Node<T> res = node;
+        while (res.parent != null && res.parent.right == res) {
+            res = res.parent;
+        }
+        return res.parent;
+
+    }
+
+    private Node<T> getLowerParent(Node<T> node) {
+        Node<T> res = node;
+        while (res.parent != null && res.parent.left == res) {
+            res = res.parent;
+        }
+        return res.parent;
+
     }
 
     @Override
@@ -234,31 +239,61 @@ public class TreeSet<T> implements SortedSet<T> {
 
     @Override
     public T first() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'first'");
+        return getMinNode(root).obj;
     }
 
     @Override
     public T last() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'last'");
+        return getMaxNode(root).obj;
+
     }
 
     @Override
     public T floor(T key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'floor'");
+        Node<T> node = floorNode(key);
+        return node == null ? null : node.obj;
+    }
+
+    private Node<T> floorNode(T key) {
+        Node<T> node = getParentOrNode(key);
+        if (node != null && comparator.compare(key, node.obj) < 0) {
+            node = getLowerParent(node);
+        }
+        return node;
     }
 
     @Override
     public T ceiling(T key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ceiling'");
+        Node<T> node = ceilingNode(key);
+        return node == null ? null : node.obj;
+    }
+
+    private Node<T> ceilingNode(T key) {
+        Node<T> node = getParentOrNode(key);
+        if (node != null && comparator.compare(key, node.obj) > 0) {
+            node = getGreaterParent(node);
+        }
+        return node;
     }
 
     @Override
     public SortedSet<T> subSet(T keyFrom, T keyTo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'subSet'");
+        if (comparator.compare(keyFrom, keyTo) > 0) {
+            throw new IllegalArgumentException();
+        }
+
+        SortedSet<T> subSet = new TreeSet<>(comparator);
+        Node<T> node = ceilingNode(keyFrom);
+        while (node != null && comparator.compare(node.obj, keyTo) < 0) {
+            subSet.add(node.obj);
+            node = getNextCurrent(node);
+        }
+        return subSet;
+    }
+
+    private Node<T> getNextCurrent(Node<T> current) {
+        return current.right == null ?
+            getGreaterParent(current) :
+            getMinNode(current.right);
     }
 }

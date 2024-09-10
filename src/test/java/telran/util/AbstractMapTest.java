@@ -80,8 +80,9 @@ public abstract class AbstractMapTest {
 
     @Test
     void valuesTest() {
-        String[] expected = Arrays.stream(array).map(this::addValue).toArray(String[]::new);
-        String[] values = map.values().stream().toArray(String[]::new);
-        runTest(expected, values);
+        String[] expected = Arrays.stream(array).map(this::addValue).sorted().toArray(String[]::new);
+        String[] values = map.values().stream().sorted().toArray(String[]::new);
+
+        assertArrayEquals(expected, values);
     }
 }

@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class TreeSetTest extends SetTest {
+public class TreeSetTest extends SortedSetTest{
     @BeforeEach
     @Override
     void setUp() {

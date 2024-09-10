@@ -1,6 +1,7 @@
 package telran.util;
 
 import java.util.Iterator;
+
 import telran.util.LinkedList.Node;
 
 public class LinkedHashSet<T> implements Set<T> {
@@ -21,38 +22,62 @@ public class LinkedHashSet<T> implements Set<T> {
 
     @Override
     public boolean remove(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        Node<T> node = map.get(pattern);
+        boolean res = false;
+        if (node != null) {
+            res = true;
+            list.removeNode(node);
+            map.remove(pattern);
+        }
+        return res;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'size'");
+        return list.size;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+        return list.isEmpty();
     }
 
     @Override
     public boolean contains(T obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
+        return map.containsKey(obj);
     }
 
     @Override
     public Iterator<T> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new LinkedHashSetIterator();
+        
+    }
+
+    class LinkedHashSetIterator implements Iterator<T> {
+        LinkedList<T>.LinkedListIterator iterator = (LinkedList<T>.LinkedListIterator) list.iterator();
+
+        @Override
+        public boolean hasNext() {
+            return iterator.hasNext();
+        }
+
+        @Override
+        public T next() {
+           return iterator.next();
+        }
+
+        @Override
+        public void remove() {
+            T prev = iterator.getPrev();
+            iterator.remove();
+            map.remove(prev);
+        }
     }
 
     @Override
     public T get(Object pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        Node<T> res = map.get(pattern);
+        return res != null ?  res.obj : null;
     }
 
 }

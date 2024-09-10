@@ -76,7 +76,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     
     @Override
     public V remove(K key) {
-        Entry<K,V> entry = set.get(key); 
+        Entry<K, V> pattern = new Entry<>((K) key, null);
+        Entry<K,V> entry = set.get(pattern); 
         V res = null;
         if(entry != null){
             set.remove(entry);

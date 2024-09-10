@@ -19,6 +19,10 @@ public class LinkedList<T> implements List<T> {
         Node<T> curr = head;
         Node<T> prev = null;
 
+        public T getPrev() {
+            return prev == null ? null : prev.obj;
+        }
+
         @Override
         public boolean hasNext() {
             return curr != null;

@@ -97,7 +97,7 @@ public abstract class CollectionTest {
         it.next();
         it.next();
         it.remove();
-        ;
+        
         assertFalse(collection.contains(n));
         assertThrows(IllegalStateException.class, () -> it.remove());
     }
