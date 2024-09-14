@@ -2,6 +2,8 @@ package telran.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.NoSuchElementException;
+
 import org.junit.jupiter.api.Test;
 
 //{3, -10, 20, 1, 10, 8, 100 , 17}
@@ -34,6 +36,9 @@ public abstract class SortedSetTest extends SetTest {
     @Test
     void firstTest() {
         assertEquals(-10, sortedSet.first());
+        sortedSet.clear();
+        assertThrowsExactly(NoSuchElementException.class,
+        () -> sortedSet.first());
     }
 
     @Test
