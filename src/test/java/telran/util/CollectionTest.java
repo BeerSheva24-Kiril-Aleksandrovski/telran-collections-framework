@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 100;
+    protected static final int N_ELEMENTS = 1_048_575;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = { 3, -10, 20, 1, 10, 8, 100, 17 };
@@ -118,10 +118,14 @@ public abstract class CollectionTest {
     @Test
     void perfomanceTest() {
         collection.clear();
-        IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
+        fillBigCollection();
         collection.removeIf(n -> n % 2 == 0);
         assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
         collection.clear();
         assertTrue(collection.isEmpty());
+    }
+    
+    protected void fillBigCollection() {
+        IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
     }
 }
